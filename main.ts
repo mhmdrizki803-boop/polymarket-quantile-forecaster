@@ -26,7 +26,9 @@ function estimateSpread(prices: number[]): number {
     squaredDeviations / (changes.length - 1),
   );
 
-  return Math.min(0.03, Math.max(0.0012, sampleStandardDeviation));
+  // The sample deviation overstates the band: the practice shows a 90% band covering 98.7% of
+  // minutes, so the spread is scaled down to bring the coverage back near 90%.
+  return Math.min(0.012, Math.max(0.0007, sampleStandardDeviation * 0.6));
 }
 
 function roundSix(value: number): number {
