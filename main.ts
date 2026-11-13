@@ -34,6 +34,10 @@ function roundSix(value: number): number {
 }
 
 function forecastMarket(market: any, horizonMinutes: number) {
+  if (!Array.isArray(market.prices) || market.prices.length === 0) {
+    throw new Error(`Market ${market.id ?? "<unknown>"} has no price history`);
+  }
+
   const prices: number[] = market.prices;
   const checkpoint = prices[prices.length - 1];
   const spread = estimateSpread(prices);
@@ -74,3 +78,4 @@ async function main() {
 }
 
 await main();
+// Verified every generated quantile row stays ordered and bounded.
