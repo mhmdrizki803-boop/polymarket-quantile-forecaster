@@ -41,7 +41,10 @@ function forecastMarket(market: any, horizonMinutes: number) {
   }
 
   const prices: number[] = market.prices;
-  const checkpoint = prices[prices.length - 1];
+  // Robust anchor: the median of the last 60 one-minute points rather than the final
+  // tick, so one stale or spiky quote cannot move the whole forecast fan.
+  const tail = prices.slice(Math.max(0, prices.length - 60)).slice().sort((a, b) => a - b);
+  const checkpoint = tail[Math.floor(tail.length / 2)];
   const spread = estimateSpread(prices);
   const q = [];
 
